@@ -1,7 +1,7 @@
 const express = require('express')
 const cors = require('cors');
 require('dotenv').config()
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
 //Middlewares
@@ -35,7 +35,12 @@ async function run() {
       res.send(result)
     })
 
-
+    app.get('/api/v1/camp-details/:id', async(req,res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const result = await campsCollections.findOne(query);
+      res.send(result)
+    })
 
 
     await client.connect();
