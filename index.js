@@ -23,6 +23,7 @@ async function run() {
   try {
 
     const campsCollections = client.db('campwell').collection('camps')
+    const usersCollections = client.db('campwell').collection('users')
 
     app.get("/api/v1/get-all-camps", async(req,res)=>{
       let sortObj = {}
@@ -39,6 +40,12 @@ async function run() {
       const id = req.params.id;
       const query = {_id: new ObjectId(id)};
       const result = await campsCollections.findOne(query);
+      res.send(result)
+    })
+
+    app.post('/api/v1/save-user', async(req,res)=>{
+      const userInfo = req.body;
+      const result = await usersCollections.insertOne(userInfo);
       res.send(result)
     })
 
