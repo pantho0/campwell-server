@@ -25,7 +25,13 @@ async function run() {
     const campsCollections = client.db('campwell').collection('camps')
 
     app.get("/api/v1/get-all-camps", async(req,res)=>{
-      const result = await campsCollections.find().toArray();
+      let sortObj = {}
+      const sortField = req.query.sortField;
+      const sortOrder = req.query.sortOrder;
+      if(sortField && sortObj){
+        sortObj[sortField] = sortOrder
+      }
+      const result = await campsCollections.find().sort(sortObj).toArray();
       res.send(result)
     })
 
