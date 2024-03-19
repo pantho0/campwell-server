@@ -42,7 +42,20 @@ async function run() {
       const result = await campsCollections.findOne(query);
       res.send(result)
     })
+    
+    app.post('/api/v1/add-camp', async(req,res)=>{
+      const campData = req.body;
+      const result = await campsCollections.insertOne(campData);
+      res.send(result);
+    })
 
+    app.get('/api/v1/get-user/:email', async(req,res)=>{
+      const email = req.params.email;
+      const query = {email : email}
+      const result = await usersCollections.findOne(query);
+      res.send(result)
+      
+    })
     app.post('/api/v1/save-user', async(req,res)=>{
       const userInfo = req.body;
       const result = await usersCollections.insertOne(userInfo);
