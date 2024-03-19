@@ -46,7 +46,7 @@ async function run() {
     app.get('/api/v1/manage-camp/:email', async(req,res)=>{
       const email = req.params.email;
       const query = {organizer_email: email};
-      const result = await campsCollections.findOne(query);
+      const result = await campsCollections.find(query).toArray();
       res.send(result)
     })
     
