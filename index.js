@@ -42,6 +42,14 @@ async function run() {
       const result = await campsCollections.findOne(query);
       res.send(result)
     })
+
+    app.get('/api/v1/manage-camp/:email', async(req,res)=>{
+      const email = req.params.email;
+      const query = {organizer_email: email};
+      const result = await campsCollections.findOne(query);
+      res.send(result)
+    })
+    
     
     app.post('/api/v1/add-camp', async(req,res)=>{
       const campData = req.body;
