@@ -24,6 +24,7 @@ async function run() {
 
     const campsCollections = client.db('campwell').collection('camps')
     const usersCollections = client.db('campwell').collection('users')
+    const registrationCollections = client.db('campwell').collection('registration')
     //to get all camps
     app.get("/api/v1/get-all-camps", async(req,res)=>{
       let sortObj = {}
@@ -57,7 +58,6 @@ async function run() {
       res.send(result)
     })
 
-
     //to manage camps (api for organizer)
     app.get('/api/v1/manage-camp/:email', async(req,res)=>{
       const email = req.params.email;
@@ -71,6 +71,14 @@ async function run() {
       const result = await campsCollections.insertOne(campData);
       res.send(result);
     })
+    // to add register data (api for participants)
+    app.post("/api/v1/registration", async(req,res)=>{
+      const registration = req.body;
+      const result = await registrationCollections.insertOne(registration);
+      res.send(result)
+    })
+
+
     //to detect user role 
     app.get('/api/v1/get-user/:email', async(req,res)=>{
       const email = req.params.email;
