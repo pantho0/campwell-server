@@ -71,6 +71,15 @@ async function run() {
       const result = await campsCollections.insertOne(campData);
       res.send(result);
     })
+
+    // to get registration infos base on participants email
+    app.get("/api/v1/get-registration-data/:email", async(req,res)=>{
+      const participant = req.params.email;
+      const query = {email : participant}
+      const result = await registrationCollections.find(query).toArray()
+      res.send(result);
+    })
+
     // to add register data (api for participants)
     app.post("/api/v1/registration", async(req,res)=>{
       const registration = req.body;
