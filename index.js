@@ -24,7 +24,7 @@ async function run() {
 
     const campsCollections = client.db('campwell').collection('camps')
     const usersCollections = client.db('campwell').collection('users')
-
+    //to get all camps
     app.get("/api/v1/get-all-camps", async(req,res)=>{
       let sortObj = {}
       const sortField = req.query.sortField;
@@ -35,7 +35,7 @@ async function run() {
       const result = await campsCollections.find().sort(sortObj).toArray();
       res.send(result)
     })
-
+    // to get camps details
     app.get('/api/v1/camp-details/:id', async(req,res)=>{
       const id = req.params.id;
       const query = {_id: new ObjectId(id)};
@@ -43,20 +43,35 @@ async function run() {
       res.send(result)
     })
 
+    // to update camps data 
+    app.patch("/api/v1/update-camp/:id", async(req,res)=>{
+      const camp = req.params.id;
+      const campInfo = req.body;
+      const filter = {_id: new ObjectId(camp)}
+      const update = {
+        $set: {
+          ...campInfo
+        }
+      }
+      const result = await campsCollections.updateOne(filter, update)
+      res.send(result)
+    })
+
+
+    //to manage camps (api for organizer)
     app.get('/api/v1/manage-camp/:email', async(req,res)=>{
       const email = req.params.email;
       const query = {organizer_email: email};
       const result = await campsCollections.find(query).toArray();
       res.send(result)
     })
-    
-    
+    //to add camps (api for organizer)   
     app.post('/api/v1/add-camp', async(req,res)=>{
       const campData = req.body;
       const result = await campsCollections.insertOne(campData);
       res.send(result);
     })
-
+    //to detect user role 
     app.get('/api/v1/get-user/:email', async(req,res)=>{
       const email = req.params.email;
       const query = {email : email}
@@ -64,6 +79,7 @@ async function run() {
       res.send(result)
       
     })
+    //to save user with role
     app.post('/api/v1/save-user', async(req,res)=>{
       const userInfo = req.body;
       const result = await usersCollections.insertOne(userInfo);
