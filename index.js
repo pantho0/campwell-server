@@ -74,10 +74,18 @@ async function run() {
 
     // to get registration infos base on participants email
     app.get("/api/v1/get-registration-data/:email", async(req,res)=>{
-      const participant = req.params.email;
-      const query = {email : participant}
-      const result = await registrationCollections.find(query).toArray()
-      res.send(result);
+      try{
+        const participantEmail = req.params.email;
+        const registrations = await registrationCollections.find({email:participantEmail}).toArray()
+        const campIds = registrations.map(reg=>new ObjectId(reg.campid))
+        const camps = await campsCollections.find({_id:{$in:campIds}}).toArray();
+        res.send({registrations, camps})
+
+      }catch(error){
+        console.log("error fetching registration data",error);
+        res.status(500).send({error:"Internal Server Error"})
+      }
+      
     })
 
     // to add register data (api for participants)
