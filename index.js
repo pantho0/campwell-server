@@ -1,6 +1,7 @@
 const express = require('express')
 const cors = require('cors');
 require('dotenv').config()
+const stripe = require('stripe')(process.env.PAYMENT_API_SECRET)
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
@@ -25,6 +26,26 @@ async function run() {
     const campsCollections = client.db('campwell').collection('camps')
     const usersCollections = client.db('campwell').collection('users')
     const registrationCollections = client.db('campwell').collection('registration')
+
+
+    //stripe api
+    app.post('/create-payment-intent', async(req, res)=>{
+      const {price} = req.body;
+      const amount = parseInt(price*100)
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount : amount,
+        currency : 'usd',
+        payment_method_types: [
+          "card",
+        ],
+      })
+      res.send({
+        clientSecret : paymentIntent.client_secret,
+      })
+    })
+
+
+
     //to get all camps
     app.get("/api/v1/get-all-camps", async(req,res)=>{
       let sortObj = {}
