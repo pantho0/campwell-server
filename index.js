@@ -26,11 +26,13 @@ async function run() {
     const campsCollections = client.db('campwell').collection('camps')
     const usersCollections = client.db('campwell').collection('users')
     const registrationCollections = client.db('campwell').collection('registration')
+    const paymentsCollections = client.db('campwell').collection('payments')
 
 
     //stripe api
-    app.post('/create-payment-intent', async(req, res)=>{
+    app.post('/api/v1/create-payment-intent', async(req, res)=>{
       const {price} = req.body;
+      console.log(price);
       const amount = parseInt(price*100)
       const paymentIntent = await stripe.paymentIntents.create({
         amount : amount,
@@ -43,6 +45,15 @@ async function run() {
         clientSecret : paymentIntent.client_secret,
       })
     })
+
+    //save payment infos
+    app.post('/api/v1/save-payment', async(req,res)=>{
+      const paymentInfo = req.body;
+      const result = await paymentsCollections.insertOne(paymentInfo)
+      res.send(result)
+    })
+
+    //
 
 
 
